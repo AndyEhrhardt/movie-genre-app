@@ -10,3 +10,6 @@ Your project description goes here. What problem did you solve? How did you solv
 
 ## TODO
 
+create components 
+import them 
+create routes
