@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './MovieList.css'
 import MovieDetails from '../MovieDetails/MovieDetails'
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+
+import {HashRouter as Router, Route} from 'react-router-dom';
 
 function MovieList() {
 
@@ -27,7 +31,13 @@ function MovieList() {
                         <Route path="/moviedetails" >
                             <MovieDetails />
                         </Route>
-
+                        <Popup
+                            trigger={<button className="button"> Open Modal </button>}
+                            modal
+                            nested
+                        >
+                            <MovieDetails />
+                        </Popup>
                         </>
                     );
                 })}
