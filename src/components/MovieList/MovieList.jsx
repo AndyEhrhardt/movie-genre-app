@@ -2,19 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './MovieList.css'
 import MovieDetails from '../MovieDetails/MovieDetails'
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 
 import {HashRouter as Router, Route} from 'react-router-dom';
+
+//A pop up import that is able to display a component as a pop up with the page greyed out
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 function MovieList() {
 
     const dispatch = useDispatch();
     const movies = useSelector(store => store.movies);
+    const popupLoad = useSelector(store => store.setPopupLoad);
+
+    //variables for opening and closing the pop up
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
     }, []);
+
+    const getSelectedMovieDetails = (event) => {
+        console.log(event.target.value)
+        dispatch({ type: 'GET_MOVIE_DETAILS', payload: event.target.value});
+        
+    }
+
 
     return (
         <main>
@@ -23,21 +36,23 @@ function MovieList() {
                 {movies.map(movie => {
                     return (
                         <>
-                        <div key={movie.id} >
-                            <h3>{movie.title}</h3>
-                            <img src={movie.poster} alt={movie.title}/>
-                        </div>
+                            <div key={movie.id} >
+                                <h3>{movie.title}</h3>
+                                <img src={movie.poster} alt={movie.title}/>
+                            </div>
 
-                        <Route path="/moviedetails" >
-                            <MovieDetails />
-                        </Route>
-                        <Popup
-                            trigger={<button className="button"> Open Modal </button>}
-                            modal
-                            nested
-                        >
-                            <MovieDetails />
-                        </Popup>
+                            <Route path="/moviedetails" >
+                                <MovieDetails />
+                            </Route>
+                            <button value={movie.id} onClick={(event) => getSelectedMovieDetails(event)}>View Details</button>
+                            <Popup
+                                open={open} 
+                                closeOnDocumentClick
+                                modal
+                                nested
+                            >
+                                <MovieDetails />
+                            </Popup>
                         </>
                     );
                 })}

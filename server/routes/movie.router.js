@@ -16,6 +16,33 @@ router.get('/', (req, res) => {
 
 });
 
+//Used for selecting details from a specific movie
+router.get('/:id', (req, res) => {
+  console.log("in the movie details get")
+  console.log(req.params.id)
+  const movieId = req.params.id;
+  const query = `
+    SELECT "movies".*, "genres"."name"
+    FROM "movies"
+    JOIN "movies_genres"
+    ON  "movies"."id" = "movies_genres"."movie_id"
+    JOIN "genres"
+    ON "genres"."id" = "movies_genres"."genre_id"
+    WHERE "movies"."id" = $1
+    GROUP BY "movies"."id", "genres"."name";`;
+  pool.query(query, [movieId])
+    .then( result => {
+      console.log(result)
+      res.send(result.rows);
+    })
+    .catch(err => {
+      console.log('ERROR: Get all movies', err);
+      res.sendStatus(500)
+    })
+});
+
+
+
 router.post('/', (req, res) => {
   console.log(req.body);
   // RETURNING "id" will give us back the id of the created movie
