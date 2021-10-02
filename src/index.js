@@ -14,6 +14,21 @@ import axios from 'axios';
 // Create the rootSaga generator function
 function* rootSaga() {
     yield takeEvery('FETCH_MOVIES', fetchAllMovies);
+    yield takeEvery('GET_MOVIE_DETAILS', getSelectedMovieDetails)
+}
+
+//sends get request for specific movie's details
+function* getSelectedMovieDetails(action) {
+    try {
+        console.log(action.payload)
+        const movieId = action.payload
+        const movieDetails = yield axios.get(`/api/movie/${movieId}`);
+        console.log(movieDetails.data)
+        yield put({type: "SET_MOVIE_DETAILS", payload: movieDetails.data});
+        yield put({type: "SET_PAGE_LOAD_TRUE"})
+    } catch {
+        console.log("error getting selected movie details");
+    }
 }
 
 function* fetchAllMovies() {
@@ -22,11 +37,9 @@ function* fetchAllMovies() {
         const movies = yield axios.get('/api/movie');
         console.log('get all:', movies.data);
         yield put({ type: 'SET_MOVIES', payload: movies.data });
-
     } catch {
         console.log('get all error');
     }
-        
 }
 
 // Create sagaMiddleware
@@ -52,15 +65,42 @@ const genres = (state = [], action) => {
     }
 }
 
+//Used to store the details for the selected movie
+const selectedMovieDetails = (state = [], action) => {
+    switch (action.type) {
+        case 'SET_MOVIE_DETAILS':
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
+//Causes the movie details pop up to load, this is necessary 
+//to run after the details have been obtained from the database
+const setPageLoad = (state = false, action) => {
+    switch (action.type) {
+        case 'SET_PAGE_LOAD_TRUE':
+            return true;
+        default:
+            return state;
+    }
+}
+
+
 // Create one store that all components can use
 const storeInstance = createStore(
     combineReducers({
         movies,
         genres,
+        selectedMovieDetails,
+        setPageLoad,
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),
 );
+
+
+
 
 // Pass rootSaga into our sagaMiddleware
 sagaMiddleware.run(rootSaga);
