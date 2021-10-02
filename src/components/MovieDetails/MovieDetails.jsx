@@ -1,11 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import { useParams } from 'react-router-dom'
 
 function MovieDetails(){
-    const dispatch = useDispatch();
+    const [selectedMovie, setSelectedMovie] = useState({})
+    //gets the id of the selected movie from url
+    const {id} = useParams();
+    const history = useHistory();
+    //gets genres for selected movie
     const movieDetails = useSelector(store => store.selectedMovieDetails);
-    console.log(movieDetails)
+    //gets list of movies
+    const allMovies = useSelector(store => store.movies);
+    const dispatch = useDispatch();
 
+    useEffect(() => {
+        getMovieInfo();
+    }, []);
+
+    const getMovieInfo =() => {
+        dispatch({ type: 'FETCH_MOVIES' });
+        dispatch({ type: 'GET_MOVIE_DETAILS', payload: id})
+        whichMovie()
+    }
+
+    
+
+    const whichMovie = () => {
+        allMovies.map((movie) => {
+            console.log(movie.id)
+            console.log(id)
+            if(`${movie.id}`===id){
+                return setSelectedMovie(movie)
+            }
+        })
+    }
+    console.log(selectedMovie)
+
+    const handleBack = (event) =>{
+        event.preventDefault();
+        history.push("/")
+    }
+    
     return(
         <div>
             <h1>Movie Details</h1>
@@ -16,7 +53,7 @@ function MovieDetails(){
                 {movieDetails.map((movie) => (
                     <h4>{movie.name}</h4>
                 ))}
-                <button onClick={() => dispatch({type: 'SET_POPUP_LOAD_FALSE'})}>Close</button>
+                <button onClick={(event) => handleBack(event)}>Close</button>
         </div>
     )
 }

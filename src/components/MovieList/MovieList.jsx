@@ -5,31 +5,33 @@ import MovieDetails from '../MovieDetails/MovieDetails'
 
 import {HashRouter as Router, Route} from 'react-router-dom';
 
-//A pop up import that is able to display a component as a pop up with the page greyed out
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
+import { useHistory } from 'react-router-dom';
+
+
+
 
 function MovieList() {
 
     const dispatch = useDispatch();
     const movies = useSelector(store => store.movies);
+    const movieDetails = useSelector(store => store.selectedMovieDetails);
 
-    //redux store updates popupLoad once it gets a result from the database
-    const popupLoad = useSelector(store => store.setPopupLoad);
-
-    //variables for opening and closing the pop up
-    const [open, setOpen] = useState(false);
+    //used for navigating to the movie details page
+    const history = useHistory();
 
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
-    }, []);
+        dispatch({ type: 'GET_MOVIE_DETAILS', payload: 1}); //selects any movie to have some information in the reducer
+    }, []); //otherwise movie detail page will load 1/2 a second before any information is in the reducer and fail to load
 
     //dispatches to sagas with movie id to get movie details from database
-    const getSelectedMovieDetails = (event) => {
-        console.log(event.target.value);
-        dispatch({ type: 'GET_MOVIE_DETAILS', payload: event.target.value});
+    const getSelectedMovieDetails = (movie) => {
+        console.log(movie);
+        //dispatch({ type: 'GET_MOVIE_DETAILS', payload: movie.id})
+        console.log(movieDetails)
+        history.push(`/moviedetails/${movie.id}`)
     }
-
+    
 
     return (
         <main>
@@ -37,26 +39,17 @@ function MovieList() {
             <section className="movies">
                 {movies.map(movie => {
                     return (
-                        <>
+                        <div>
                             <div key={movie.id} >
                                 <h3>{movie.title}</h3>
                                 <img src={movie.poster} alt={movie.title}/>
                             </div>
 
-                        
-                            <button value={movie.id} onClick={(event) => getSelectedMovieDetails(event)}>View Details</button>
-                            <Popup
-                                open={popupLoad} 
-                                modal
-                                nested
-                                position="top center"
-                            >
-                                <div>
-                                <MovieDetails setOpen={setOpen}/>
-                                
-                                </div>
-                            </Popup>
-                        </>
+                            
+                            <div>
+                                <button value={movie.id} onClick={() => getSelectedMovieDetails(movie)}>View Details</button>
+                            </div>
+                        </div>
                     );
                 })}
             </section>
