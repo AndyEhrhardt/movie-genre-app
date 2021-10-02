@@ -25,7 +25,7 @@ function* getSelectedMovieDetails(action) {
         const movieDetails = yield axios.get(`/api/movie/${movieId}`);
         console.log(movieDetails.data)
         yield put({type: "SET_MOVIE_DETAILS", payload: movieDetails.data});
-        yield put({type: "SET_POPUP_LOAD_TRUE"})
+        yield put({type: "SET_PAGE_LOAD_TRUE"})
     } catch {
         console.log("error getting selected movie details");
     }
@@ -77,9 +77,9 @@ const selectedMovieDetails = (state = [], action) => {
 
 //Causes the movie details pop up to load, this is necessary 
 //to run after the details have been obtained from the database
-const setPopupLoad = (state = false, action) => {
+const setPageLoad = (state = false, action) => {
     switch (action.type) {
-        case 'SET_POPUP_LOAD_TRUE':
+        case 'SET_PAGE_LOAD_TRUE':
             return true;
         default:
             return state;
@@ -93,7 +93,7 @@ const storeInstance = createStore(
         movies,
         genres,
         selectedMovieDetails,
-        setPopupLoad,
+        setPageLoad,
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),

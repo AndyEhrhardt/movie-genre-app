@@ -9,13 +9,12 @@ function MovieDetails(){
     return(
         <>
             <h1>Movie Details</h1>
-            {/* 
-            {movieDetails ? (
-                <h2>{movies[0].title}</h2>
-                <p>{movies[0].title}</p>
-            ): ("didn't load I guess")
-            }
-                */}
+           
+           
+                <h2>{movieDetails[0].title}</h2>
+                <p>{movieDetails[0].title}</p>
+                
+               
         </>
     )
 }

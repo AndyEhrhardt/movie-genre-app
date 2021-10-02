@@ -5,18 +5,16 @@ import MovieDetails from '../MovieDetails/MovieDetails'
 
 import {HashRouter as Router, Route} from 'react-router-dom';
 
-//A pop up import that is able to display a component as a pop up with the page greyed out
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
+import { useHistory } from 'react-router-dom';
 
 function MovieList() {
 
     const dispatch = useDispatch();
     const movies = useSelector(store => store.movies);
-    const popupLoad = useSelector(store => store.setPopupLoad);
+    const pageLoad = useSelector(store => store.setPageLoad);
 
-    //variables for opening and closing the pop up
-    const [open, setOpen] = useState(false);
+    //used for navigating to the movie details page
+    const history = useHistory();
 
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
@@ -25,14 +23,23 @@ function MovieList() {
     const getSelectedMovieDetails = (event) => {
         console.log(event.target.value)
         dispatch({ type: 'GET_MOVIE_DETAILS', payload: event.target.value});
-        
+        checkLoad();
     }
-
+    
+    const checkLoad = () => { //checks if movie details have loaded every 100ms
+        if(pageLoad === false) {
+           window.setTimeout(checkLoad, 100); 
+        } else {
+            history.push('/moviedetails')
+        }
+    }
 
     return (
         <main>
             <h1>MovieList</h1>
             <section className="movies">
+            <Router>        
+
                 {movies.map(movie => {
                     return (
                         <>
@@ -41,21 +48,14 @@ function MovieList() {
                                 <img src={movie.poster} alt={movie.title}/>
                             </div>
 
-                            <Route path="/moviedetails" >
-                                <MovieDetails />
-                            </Route>
+                            
+                            
                             <button value={movie.id} onClick={(event) => getSelectedMovieDetails(event)}>View Details</button>
-                            <Popup
-                                open={open} 
-                                closeOnDocumentClick
-                                modal
-                                nested
-                            >
-                                <MovieDetails />
-                            </Popup>
+                            
                         </>
                     );
                 })}
+            </Router>
             </section>
         </main>
 
