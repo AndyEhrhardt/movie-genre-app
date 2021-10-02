@@ -13,6 +13,8 @@ function MovieList() {
 
     const dispatch = useDispatch();
     const movies = useSelector(store => store.movies);
+
+    //redux store updates popupLoad once it gets a result from the database
     const popupLoad = useSelector(store => store.setPopupLoad);
 
     //variables for opening and closing the pop up
@@ -22,10 +24,10 @@ function MovieList() {
         dispatch({ type: 'FETCH_MOVIES' });
     }, []);
 
+    //dispatches to sagas with movie id to get movie details from database
     const getSelectedMovieDetails = (event) => {
-        console.log(event.target.value)
+        console.log(event.target.value);
         dispatch({ type: 'GET_MOVIE_DETAILS', payload: event.target.value});
-        
     }
 
 
@@ -41,17 +43,18 @@ function MovieList() {
                                 <img src={movie.poster} alt={movie.title}/>
                             </div>
 
-                            <Route path="/moviedetails" >
-                                <MovieDetails />
-                            </Route>
+                        
                             <button value={movie.id} onClick={(event) => getSelectedMovieDetails(event)}>View Details</button>
                             <Popup
-                                open={open} 
-                                closeOnDocumentClick
+                                open={popupLoad} 
                                 modal
                                 nested
+                                position="top center"
                             >
-                                <MovieDetails />
+                                <div>
+                                <MovieDetails setOpen={setOpen}/>
+                                
+                                </div>
                             </Popup>
                         </>
                     );

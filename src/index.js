@@ -81,6 +81,9 @@ const setPopupLoad = (state = false, action) => {
     switch (action.type) {
         case 'SET_POPUP_LOAD_TRUE':
             return true;
+            break;
+        case 'SET_POPUP_LOAD_FALSE':
+            return false;
         default:
             return state;
     }
