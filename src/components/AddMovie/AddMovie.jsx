@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 function AddMovie(){
     const dispatch = useDispatch();
-
+    const history = useHistory();
     //Initial state is an OBJECT, with keys id and name
     let [newMovie, setNewMovie] = useState({
         title: "",
@@ -47,7 +47,7 @@ function AddMovie(){
     return (
         <div>
             <h3>Add Movie Form</h3>
-            <button onClick={() => history.push(`/movielist`)}>Movie List</button>
+            <button onClick={() => history.push(`/`)}>Movie List</button>
             <form onSubmit={addNewMovie}>
                 <input id={"title"} placeholder="Title" type='text' value={newMovie.title} onChange={handleNameChange} />
                 <input id={"description"} placeholder="Description" type='text' value={newMovie.description} onChange={handleNameChange} />

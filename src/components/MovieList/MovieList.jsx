@@ -43,12 +43,10 @@ function MovieList() {
                         <div>
                             <div key={movie.id} >
                                 <h3>{movie.title}</h3>
-                                <img src={movie.poster} alt={movie.title}/>
-                            </div>
-
-                            
-                            <div>
-                                <button value={movie.id} onClick={() => getSelectedMovieDetails(movie)}>View Details</button>
+                                <img 
+                                onClick={() => getSelectedMovieDetails(movie)}
+                                src={movie.poster} 
+                                alt={movie.title}/>
                             </div>
                         </div>
                     );
