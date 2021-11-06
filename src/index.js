@@ -11,6 +11,18 @@ import createSagaMiddleware from 'redux-saga';
 import { takeEvery, put } from 'redux-saga/effects';
 import axios from 'axios';
 
+
+const defaultDetails = [{
+    description: "loading",
+    id: "",
+    poster: "loading",
+    title: "loading",
+    name: "loading",
+}]
+
+
+
+
 // Create the rootSaga generator function
 function* rootSaga() {
     yield takeEvery('FETCH_MOVIES', fetchAllMovies);
@@ -18,13 +30,14 @@ function* rootSaga() {
     yield takeEvery('POST_MOVIE', postNewMovie);
 }
 
+
+//{}{}{}{}{}{}  DELETED THIS FROM THE PUT IN FUNCTION BELOW payload: movieDetails.data
 function* postNewMovie(action) {
     console.log('in post movie details')
     try {
         console.log(action.payload)
-        const newMovie = action.payload
         yield axios.post(`/api/movie/`, action.payload);
-        yield put({type: "FETCH_MOVIES", payload: movieDetails.data});
+        yield put({type: "FETCH_MOVIES"});
     } catch {
         console.log("error posting movie");
     }
@@ -81,7 +94,7 @@ const genres = (state = [], action) => {
 }
 
 //Used to store the details for the selected movie
-const selectedMovieDetails = (state = [], action) => {
+const selectedMovieDetails = (state = defaultDetails, action) => {
     switch (action.type) {
         case 'SET_MOVIE_DETAILS':
             return action.payload;
@@ -112,7 +125,7 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={storeInstance}>
-        <App />
+            <App />
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')

@@ -20,6 +20,7 @@ function MovieDetails(){
     }, []);
 
     const getMovieInfo =() => {
+        console.warn(id)
         dispatch({ type: 'FETCH_MOVIES' });
         dispatch({ type: 'GET_MOVIE_DETAILS', payload: id})
         whichMovie()
@@ -29,8 +30,6 @@ function MovieDetails(){
 
     const whichMovie = () => {
         allMovies.map((movie) => {
-            console.log(movie.id)
-            console.log(id)
             if(`${movie.id}`===id){
                 return setSelectedMovie(movie)
             }
@@ -51,7 +50,7 @@ function MovieDetails(){
                 <p>{movieDetails[0].description}</p>
                 <h3>Genres</h3>
                 {movieDetails.map((movie) => (
-                    <h4>{movie.name}</h4>
+                    <h4 key={movie.name}>{movie.name}</h4>
                 ))}
                 <button onClick={(event) => handleBack(event)}>Close</button>
         </div>

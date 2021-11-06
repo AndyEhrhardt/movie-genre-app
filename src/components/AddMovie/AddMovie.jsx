@@ -43,6 +43,7 @@ function AddMovie(){
             poster: "",
             genre_id: "",
          });
+         history.push(`/`)
     }
     return (
         <div>
